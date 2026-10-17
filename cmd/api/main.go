@@ -31,7 +31,12 @@ func main() {
 	translator := gotext.NewTranslator(cfg, languages)
 	users := service.NewUserService(repository, cfg.Languages)
 	languageService := service.NewLanguageService(repository, languages)
-	bot, err := telebot.NewBot(telebot.Settings{Token: cfg.TgToken, Poller: &telebot.LongPoller{Timeout: 10 * 60, AllowedUpdates: []string{"message", "callback_query"}}})
+	bot, err := telebot.NewBot(
+		telebot.Settings{
+			Token:  cfg.TgToken,
+			Poller: &telebot.LongPoller{Timeout: 10 * 60, AllowedUpdates: []string{"message", "callback_query"}},
+		},
+	)
 	if err != nil {
 		appLogger.Fatal("Failed to create bot", err, "bot")
 	}
@@ -45,6 +50,7 @@ func main() {
 	bot.Stop()
 	log.Println("Stopped")
 }
+
 func configuredLanguages(value string) []string {
 	var result []string
 	for _, language := range strings.Split(value, ",") {

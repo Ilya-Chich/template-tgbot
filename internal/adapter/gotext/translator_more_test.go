@@ -19,7 +19,11 @@ func TestTranslatorLoadsLocalesAndFallsBack(t *testing.T) {
 	if err := os.Chdir(root); err != nil {
 		t.Fatal(err)
 	}
-	defer os.Chdir(old)
+	defer func() {
+		if err := os.Chdir(old); err != nil {
+			t.Errorf("restore working directory: %v", err)
+		}
+	}()
 	tr := NewTranslator(&config.Config{Languages: "en"}, []string{"en", "ru"})
 	if got := tr.T("language_btn", "en"); got == "language_btn" {
 		t.Fatal("expected loaded translation")

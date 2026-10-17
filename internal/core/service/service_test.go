@@ -3,6 +3,7 @@ package service
 import (
 	"errors"
 	"testing"
+
 	"tgbot/internal/core/domain"
 )
 
@@ -36,10 +37,12 @@ func (f *fakeRepository) GetPersonLang(int64) (string, error) {
 	}
 	return *f.person.Lang, nil
 }
+
 func (f *fakeRepository) UpdateLang(_ int64, lang string) error {
 	f.updatedLang = lang
 	return f.updateErr
 }
+
 func TestLanguageServiceChooseLanguage(t *testing.T) {
 	r := &fakeRepository{}
 	s := NewLanguageService(r, []string{"en", "ru"})
@@ -48,6 +51,7 @@ func TestLanguageServiceChooseLanguage(t *testing.T) {
 		t.Fatalf("unexpected result: %+v, %v, repo=%+v", result, err, r)
 	}
 }
+
 func TestLanguageServiceRejectsUnsupportedLanguage(t *testing.T) {
 	r := &fakeRepository{}
 	s := NewLanguageService(r, []string{"en"})
@@ -59,6 +63,7 @@ func TestLanguageServiceRejectsUnsupportedLanguage(t *testing.T) {
 		t.Fatal("updated unsupported language")
 	}
 }
+
 func TestLanguageServiceReturnsPersistenceFailure(t *testing.T) {
 	r := &fakeRepository{updateErr: errors.New("database unavailable")}
 	s := NewLanguageService(r, []string{"en"})
@@ -67,23 +72,29 @@ func TestLanguageServiceReturnsPersistenceFailure(t *testing.T) {
 		t.Fatalf("error=%v", err)
 	}
 }
+
 func TestUserServiceStartsExistingUser(t *testing.T) {
 	lang := "en"
 	r := &fakeRepository{person: &domain.Person{TgID: 7, Lang: &lang}}
 	users := NewUserService(r, "en")
 	result, err := users.Start(7, "@user", "User", "en")
-	if err != nil || r.added || result.Person.TgID != 7 || result.Language != "en" || result.MessageKey != "main_message" {
+	if err != nil || r.added || result.Person.TgID != 7 || result.Language != "en" ||
+		result.MessageKey != "main_message" {
 		t.Fatalf("unexpected result: %+v err=%v", result, err)
 	}
 }
+
 func TestUserServiceCreatesMissingUser(t *testing.T) {
 	r := &fakeRepository{getErr: errors.New("not found")}
 	users := NewUserService(r, "ru")
 	result, err := users.Start(7, "@user", "User", "ru-RU")
-	if err != nil || !r.added || r.addedLang != "ru" || r.addedLangTG == nil || *r.addedLangTG != "ru-RU" || result.Person.TgID != 7 || result.Language != "ru" {
+	if err != nil || !r.added || r.addedLang != "ru" || r.addedLangTG == nil || *r.addedLangTG != "ru-RU" ||
+		result.Person.TgID != 7 ||
+		result.Language != "ru" {
 		t.Fatalf("unexpected result: %+v repo=%+v err=%v", result, r, err)
 	}
 }
+
 func TestUserServiceReturnsCreateError(t *testing.T) {
 	createErr := errors.New("insert failed")
 	r := &fakeRepository{getErr: errors.New("not found"), addErr: createErr}

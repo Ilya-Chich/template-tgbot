@@ -14,13 +14,22 @@ type PersonRepository struct{ pool *pgxpool.Pool }
 func NewPersonRepository(pool *pgxpool.Pool) *PersonRepository { return &PersonRepository{pool: pool} }
 
 func (r *PersonRepository) AddNewPerson(tgID int64, username, fullname, lang string, langTG *string) error {
-	_, err := r.pool.Exec(context.Background(), `INSERT INTO users (tgid, username, fullname, lang, lang_tg) VALUES ($1, $2, $3, $4, $5) ON CONFLICT (tgid) DO NOTHING`, tgID, username, fullname, lang, langTG)
+	_, err := r.pool.Exec(
+		context.Background(),
+		`INSERT INTO users (tgid, username, fullname, lang, lang_tg) VALUES ($1, $2, $3, $4, $5) ON CONFLICT (tgid) DO NOTHING`,
+		tgID,
+		username,
+		fullname,
+		lang,
+		langTG,
+	)
 	return err
 }
 
 func (r *PersonRepository) GetPerson(tgID int64) (*domain.Person, error) {
 	var person domain.Person
-	err := r.pool.QueryRow(context.Background(), `SELECT id, tgid, username, fullname, lang, lang_tg, created_at FROM users WHERE tgid = $1 LIMIT 1`, tgID).Scan(&person.ID, &person.TgID, &person.Username, &person.Fullname, &person.Lang, &person.LangTG, &person.CreatedAt)
+	err := r.pool.QueryRow(context.Background(), `SELECT id, tgid, username, fullname, lang, lang_tg, created_at FROM users WHERE tgid = $1 LIMIT 1`, tgID).
+		Scan(&person.ID, &person.TgID, &person.Username, &person.Fullname, &person.Lang, &person.LangTG, &person.CreatedAt)
 	if err != nil {
 		return nil, err
 	}

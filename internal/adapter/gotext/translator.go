@@ -22,6 +22,7 @@ type Translator struct {
 func NewTranslator(cfg *config.Config, languages []string) *Translator {
 	return &Translator{defaultLang: cfg.Languages, languages: languages, langs: make(map[string]*gotext.Locale)}
 }
+
 func (t *Translator) T(key, lang string, args ...map[string]any) string {
 	t.once.Do(t.loadLanguages)
 	loc := t.langs[lang]
@@ -43,6 +44,7 @@ func (t *Translator) T(key, lang string, args ...map[string]any) string {
 	}
 	return text
 }
+
 func (t *Translator) loadLanguages() {
 	path := filepath.Join(".", "locale")
 	for _, code := range t.languages {
@@ -51,6 +53,7 @@ func (t *Translator) loadLanguages() {
 		t.langs[code] = locale
 	}
 }
+
 func replaceVar(s, name, value string) string {
 	return strings.ReplaceAll(s, fmt.Sprintf("{%s}", name), value)
 }

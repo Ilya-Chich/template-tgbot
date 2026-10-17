@@ -1,8 +1,9 @@
 package telegram
 
 import (
-	"gopkg.in/telebot.v3"
 	"tgbot/internal/core/port"
+
+	"gopkg.in/telebot.v3"
 )
 
 func onStart(c telebot.Context, users port.UserStarter, translator port.Translator, logger port.Logger) error {

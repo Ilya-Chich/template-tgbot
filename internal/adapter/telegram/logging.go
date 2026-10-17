@@ -144,8 +144,10 @@ func LoggingMiddleware(next telebot.HandlerFunc) telebot.HandlerFunc {
 }
 
 // BotBlockedErrorMsg is the exact error message returned by telebot when a user blocks the bot
-const BotBlockedErrorMsg = "telegram: bot was blocked by the user (403)"
-const BotDeactivatedErrorMsg = "telegram: user is deactivated (403)"
+const (
+	BotBlockedErrorMsg     = "telegram: bot was blocked by the user (403)"
+	BotDeactivatedErrorMsg = "telegram: user is deactivated (403)"
+)
 
 // IsBotBlockedError checks if the error indicates that a user has blocked the bot
 func IsBotBlockedError(err error) bool {

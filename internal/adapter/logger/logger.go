@@ -28,6 +28,7 @@ func (l *Logger) Error(message string, err error, component string) {
 		log.Printf("%s: %v", message, err)
 	}
 }
+
 func (l *Logger) Fatal(message string, err error, component string) {
 	l.Error(message, err, component)
 	log.Fatal("fatal error")

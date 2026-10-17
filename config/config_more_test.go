@@ -20,7 +20,13 @@ func TestPostgresURLValidationAndDefaults(t *testing.T) {
 	if _, err := (&Config{}).PostgresURL(); err == nil {
 		t.Fatal("expected incomplete config error")
 	}
-	cfg := &Config{PostgresUser: "u", PostgresPassword: "p", PostgresHost: "localhost", PostgresPort: "5432", PostgresDB: "db"}
+	cfg := &Config{
+		PostgresUser:     "u",
+		PostgresPassword: "p",
+		PostgresHost:     "localhost",
+		PostgresPort:     "5432",
+		PostgresDB:       "db",
+	}
 	dsn, err := cfg.PostgresURL()
 	if err != nil {
 		t.Fatal(err)

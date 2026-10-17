@@ -5,9 +5,10 @@ import (
 	"fmt"
 	"testing"
 
-	"gopkg.in/telebot.v3"
 	"tgbot/internal/core/domain"
 	"tgbot/internal/core/port"
+
+	"gopkg.in/telebot.v3"
 )
 
 type testContext struct {
@@ -31,6 +32,7 @@ func (c *testContext) Send(v any, opts ...any) error {
 	c.sendOpts = append(c.sendOpts, opts)
 	return c.sendErr
 }
+
 func (c *testContext) Respond(r ...*telebot.CallbackResponse) error {
 	c.responses = append(c.responses, r...)
 	return nil
@@ -38,7 +40,7 @@ func (c *testContext) Respond(r ...*telebot.CallbackResponse) error {
 
 type fakeTranslator struct{ values map[string]string }
 
-func (t fakeTranslator) T(key, lang string, args ...map[string]any) string {
+func (t fakeTranslator) T(key, lang string, _ ...map[string]any) string {
 	if v, ok := t.values[key+":"+lang]; ok {
 		return v
 	}
@@ -92,7 +94,8 @@ func TestKeyboardBuilders(t *testing.T) {
 		t.Fatalf("unexpected menu: %#v", menu.ReplyKeyboard)
 	}
 	kb := ChoosingLangInline([]string{"en", "xx"})
-	if len(kb.InlineKeyboard) != 2 || kb.InlineKeyboard[0][0].Text != languageNames["en"] || kb.InlineKeyboard[1][0].Text != "xx" {
+	if len(kb.InlineKeyboard) != 2 || kb.InlineKeyboard[0][0].Text != languageNames["en"] ||
+		kb.InlineKeyboard[1][0].Text != "xx" {
 		t.Fatalf("unexpected inline keyboard: %#v", kb.InlineKeyboard)
 	}
 }
@@ -117,7 +120,7 @@ func TestLanguageAndTextHandlers(t *testing.T) {
 func TestChooseLanguageBranches(t *testing.T) {
 	tr := fakeTranslator{}
 	base := &testContext{sender: &telebot.User{ID: 9}, callback: &telebot.Callback{Data: "bad"}}
-	if err := onChooseLang(base, &fakeLanguages{}, tr, &fakeRepo{}, nil, "en"); err != nil || len(base.responses) != 1 {
+	if err := onChooseLang(base, &fakeLanguages{}, tr, &fakeRepo{}, "en"); err != nil || len(base.responses) != 1 {
 		t.Fatal("invalid callback branch")
 	}
 	for _, tc := range []struct {
@@ -128,17 +131,19 @@ func TestChooseLanguageBranches(t *testing.T) {
 		{"unsupported", domain.ErrInvalidLanguage, "callback_unsupported_language"}, {"persist", domain.ErrLanguagePersistence, "callback_update_language_failed"},
 	} {
 		c := &testContext{sender: &telebot.User{ID: 9}, callback: &telebot.Callback{Data: "choose:" + tc.name}}
-		if err := onChooseLang(c, &fakeLanguages{err: tc.err}, tr, &fakeRepo{}, nil, "en"); err != nil || len(c.responses) != 1 {
+		if err := onChooseLang(c, &fakeLanguages{err: tc.err}, tr, &fakeRepo{}, "en"); err != nil ||
+			len(c.responses) != 1 {
 			t.Errorf("%s: %v", tc.name, err)
 		}
 	}
 	c := &testContext{sender: &telebot.User{ID: 9}, callback: &telebot.Callback{Data: "choose:ru"}}
 	l := &fakeLanguages{result: &port.LanguageResult{Language: "ru", MessageKey: "welcome"}}
-	if err := onChooseLang(c, l, tr, &fakeRepo{}, nil, "en"); err != nil || l.gotLang != "ru" || len(c.sent) != 1 || len(c.responses) != 1 {
+	if err := onChooseLang(c, l, tr, &fakeRepo{}, "en"); err != nil || l.gotLang != "ru" || len(c.sent) != 1 ||
+		len(c.responses) != 1 {
 		t.Fatalf("success branch: %v %#v", err, c)
 	}
 	c.sendErr = fmt.Errorf("send")
-	if err := onChooseLang(c, l, tr, &fakeRepo{}, nil, "en"); err == nil {
+	if err := onChooseLang(c, l, tr, &fakeRepo{}, "en"); err == nil {
 		t.Fatal("expected send error")
 	}
 }
@@ -147,7 +152,8 @@ func TestStartAndMiddleware(t *testing.T) {
 	tr := fakeTranslator{}
 	logger := &fakeLogger{}
 	c := &testContext{sender: &telebot.User{ID: 1, Username: "bob", FirstName: "Bob", LanguageCode: "en"}}
-	if err := onStart(c, &fakeStarter{result: &port.StartResult{Language: "en", MessageKey: "hi"}}, tr, logger); err != nil || len(c.sent) != 1 {
+	if err := onStart(c, &fakeStarter{result: &port.StartResult{Language: "en", MessageKey: "hi"}}, tr, logger); err != nil ||
+		len(c.sent) != 1 {
 		t.Fatal(err)
 	}
 	c.sender.IsBot = true
@@ -166,7 +172,8 @@ func TestStartAndMiddleware(t *testing.T) {
 	if err := LoggingMiddleware(func(telebot.Context) error { called = true; return nil })(c); err != nil || !called {
 		t.Fatal("logging middleware")
 	}
-	if !IsBotBlockedError(errors.New(BotBlockedErrorMsg)) || !IsBotBlockedError(errors.New(BotDeactivatedErrorMsg)) || IsBotBlockedError(nil) {
+	if !IsBotBlockedError(errors.New(BotBlockedErrorMsg)) || !IsBotBlockedError(errors.New(BotDeactivatedErrorMsg)) ||
+		IsBotBlockedError(nil) {
 		t.Fatal("blocked error matching")
 	}
 }
@@ -194,8 +201,18 @@ func TestHTMLParseMiddleware(t *testing.T) {
 }
 
 func TestLogErrorOptionsAndCallbackLogging(t *testing.T) {
-	LogError("oops", errors.New("bad"), WithUserID(4), WithServerName("srv"), WithSessionID("sess"), WithComponent("comp"))
-	c := &testContext{sender: &telebot.User{ID: 3, Username: "u"}, callback: &telebot.Callback{Sender: &telebot.User{ID: 3, Username: "u"}, Data: "x"}}
+	LogError(
+		"oops",
+		errors.New("bad"),
+		WithUserID(4),
+		WithServerName("srv"),
+		WithSessionID("sess"),
+		WithComponent("comp"),
+	)
+	c := &testContext{
+		sender:   &telebot.User{ID: 3, Username: "u"},
+		callback: &telebot.Callback{Sender: &telebot.User{ID: 3, Username: "u"}, Data: "x"},
+	}
 	if err := LoggingMiddleware(func(telebot.Context) error { return nil })(c); err != nil {
 		t.Fatal(err)
 	}

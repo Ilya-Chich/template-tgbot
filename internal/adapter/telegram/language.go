@@ -2,14 +2,21 @@ package telegram
 
 import (
 	"errors"
-	"gopkg.in/telebot.v3"
 	"strings"
+
+	"gopkg.in/telebot.v3"
 
 	"tgbot/internal/core/domain"
 	"tgbot/internal/core/port"
 )
 
-func showLanguageChooser(c telebot.Context, translator port.Translator, repository port.PersonRepository, supported []string, defaultLang string) error {
+func showLanguageChooser(
+	c telebot.Context,
+	translator port.Translator,
+	repository port.PersonRepository,
+	supported []string,
+	defaultLang string,
+) error {
 	lang := currentLanguage(c, repository, defaultLang)
 	return c.Send(translator.T("select_language", lang), ChoosingLangInline(supported))
 }
@@ -22,7 +29,13 @@ func currentLanguage(c telebot.Context, repository port.PersonRepository, defaul
 	return lang
 }
 
-func onChooseLang(c telebot.Context, languages port.LanguageChooser, translator port.Translator, repository port.PersonRepository, supported []string, defaultLang string) error {
+func onChooseLang(
+	c telebot.Context,
+	languages port.LanguageChooser,
+	translator port.Translator,
+	repository port.PersonRepository,
+	defaultLang string,
+) error {
 	userID := c.Sender().ID
 	current := currentLanguage(c, repository, defaultLang)
 	parts := strings.Split(c.Callback().Data, ":")
