@@ -1,0 +1,34 @@
+version: '3.9'
+
+networks:
+  default:
+    driver: bridge
+
+volumes:
+  postgres_db_vol:
+
+services:
+  tgbot:
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: environment/dev/Dockerfile
+    ports:
+      - "127.0.0.1:2345:2345"
+    env_file:
+      - .env.dev
+    volumes:
+      - .:/app
+      - ./logs:/app/logs
+      - ./locale:/app/locale
+      - ./img:/app/img
+  postgres:
+    image: postgres:16.4
+    container_name: postgres_db_container
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:5666:5432"
+    env_file:
+      - .env.dev
+    volumes:
+      - postgres_db_vol:/var/lib/postgresql/data

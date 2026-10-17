@@ -1,0 +1,30 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "main_message"
+msgstr "Dobrodošli. Izaberite jezik ispod."
+
+msgid "select_language"
+msgstr "Izaberite jezik"
+
+msgid "inform_language"
+msgstr "Odabrani jezik <b>Srpski 🇷🇸</b>"
+
+msgid "language_btn"
+msgstr "Jezik\n🇬🇧🇷🇺🇷🇸"
+
+msgid "user_not_found_try_again"
+msgstr "Korisnik nije pronađen, pokušajte kasnije."
+
+msgid "callback_invalid_selection"
+msgstr "Neispravan izbor jezika"
+
+msgid "callback_unsupported_language"
+msgstr "Nepodržan jezik"
+
+msgid "callback_update_language_failed"
+msgstr "Nije uspjelo promijeniti jezik"
+
+msgid "callback_unknown_action"
+msgstr "Nepoznata radnja"

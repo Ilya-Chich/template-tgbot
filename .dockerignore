@@ -1,0 +1,7 @@
+.env
+.env.dev
+.private.env
+.git
+.idea
+logs
+tmp

@@ -1,0 +1,30 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "main_message"
+msgstr "Welcome. Choose a language below."
+
+msgid "select_language"
+msgstr "Select a language"
+
+msgid "inform_language"
+msgstr "Selected language <b>English 🇺🇸</b>"
+
+msgid "language_btn"
+msgstr "Language\n🇬🇧🇷🇺🇷🇸"
+
+msgid "user_not_found_try_again"
+msgstr "User not found, please try again later."
+
+msgid "callback_invalid_selection"
+msgstr "Invalid language selection"
+
+msgid "callback_unsupported_language"
+msgstr "Unsupported language"
+
+msgid "callback_update_language_failed"
+msgstr "Failed to update language"
+
+msgid "callback_unknown_action"
+msgstr "Unknown action"

@@ -1,0 +1,30 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "main_message"
+msgstr "Добро пожаловать. Выберите язык ниже."
+
+msgid "select_language"
+msgstr "Выберите язык"
+
+msgid "inform_language"
+msgstr "Выбранный язык <b>Русский 🇷🇺</b>"
+
+msgid "language_btn"
+msgstr "Язык\n🇬🇧🇷🇺🇷🇸"
+
+msgid "user_not_found_try_again"
+msgstr "Пользователь не найден, попробуйте позже."
+
+msgid "callback_invalid_selection"
+msgstr "Неверный выбор языка"
+
+msgid "callback_unsupported_language"
+msgstr "Неподдерживаемый язык"
+
+msgid "callback_update_language_failed"
+msgstr "Не удалось изменить язык"
+
+msgid "callback_unknown_action"
+msgstr "Неизвестное действие"

@@ -1,0 +1,31 @@
+version: '3.9'
+
+volumes:
+  postgres_db_vol:
+
+services:
+  tgbot:
+    build:
+      context: .
+      dockerfile: environment/prod/Dockerfile
+    container_name: tgbot_production
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_HOST=postgres_db_container
+      - POSTGRES_PORT=5432
+    volumes:
+      - ./logs:/app/logs
+      - ./locale:/app/locale
+      - ./img:/app/img
+  postgres:
+    image: postgres:16.4
+    container_name: postgres_db_container
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:5432:5432"
+    env_file:
+      - .env
+    volumes:
+      - postgres_db_vol:/var/lib/postgresql/data
